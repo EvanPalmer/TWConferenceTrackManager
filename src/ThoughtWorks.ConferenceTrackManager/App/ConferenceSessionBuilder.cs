@@ -45,7 +45,8 @@ namespace ThoughtWorks.ConferenceTrackManager.App
 
         public void PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks)
         {
-            //todo make this smaller
+            //todo make this smaller And better tested.
+
             var sessionIndex = 0;
             var failedAttempts = 0;
             var allSessionsFailed = false;

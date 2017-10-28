@@ -46,7 +46,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             // Arrange
             List<ITalk> talks = new List<ITalk>();
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
-            var sessions = new List<IConferenceSession>();
+            var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
             sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(sessions);
             var conference = new Conference(talks, sessionBuilder.Object);
 
@@ -54,7 +54,26 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             conference.Print();
 
             // Assert
-            sessionBuilder.Verify(sb => sb.PopulateSessionsWithTalks(sessions, talks), Times.Once());
+            sessionBuilder.Verify(sb => sb.PopulateSessionsWithTalks(sessions, It.IsAny<IList<ITalk>>()), Times.Once());
+        }
+
+        [Fact]
+        public void Print_UsaesSortedTalk_ToPopulatesSessions()
+        {
+            // Arrange
+            List<ITalk> talks = new List<ITalk>();
+            var sessionBuilder = new Mock<IConferenceSessionBuilder>();
+            var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
+            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(sessions);
+            var sortedTalks = new List<ITalk>();
+            sessionBuilder.Setup(sb => sb.SortTalks(talks)).Returns(sortedTalks);
+            var conference = new Conference(talks, sessionBuilder.Object);
+
+            // Act
+            conference.Print();
+
+            // Assert
+            sessionBuilder.Verify(sb => sb.PopulateSessionsWithTalks(sessions, sortedTalks), Times.Once());
         }
 
         [Fact]

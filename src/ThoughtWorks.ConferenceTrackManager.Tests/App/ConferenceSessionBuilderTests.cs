@@ -110,34 +110,61 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         }
 
         [Fact]
-        public void PopulateSessionsWithTalks_()
+        public void PopulateSessionsWithTalks_IncludesAllTalksInSession_WhenTryIncludeSucceeds()
         {
             // Arrange
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(2);
 
             var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object);
-            var talks = new List<Talk> {
+            var talks = new List<ITalk> {
                 new Talk("A talk 10min"),
                 new Talk("Some talk 10min"),
-                new Talk("Some other talk 10min"),
+                new Talk("Some other talk 10min"),  
                 new Talk("Yet another talk 10min"),
             };
             var sessions = new List<IConferenceSession>();
             var mockSession1 = new Mock<IConferenceSession>();
             mockSession1.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(true);
-            var mockSession2 = new Mock<IConferenceSession>();
-            mockSession2.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(true);
-
+           
             sessions.Add(mockSession1.Object);
+
+            // Act
+            conferenceSessionBuilder.PopulateSessionsWithTalks(sessions, talks);
+
+            // Assert
+            mockSession1.Verify(s => s.TryIncludeTalkInSession(It.IsAny<ITalk>()), Times.Exactly(4));
+        }
+
+        [Fact]
+        public void PopulateSessionsWithTalks_IncludesAllTalksInSession_WhenTryIncludeFailsOnFirst()
+        {
+            // Arrange
+            var config = new Mock<IAppConfiguration>();
+            config.Setup(c => c.NumberOfTracks).Returns(2);
+
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object);
+            var talks = new List<ITalk> {
+                new Talk("A talk 10min"),
+                new Talk("Some talk 10min"),
+                new Talk("Some other talk 10min"),
+                new Talk("Yet another talk 10min"),
+            };
+
+            var sessions = new List<IConferenceSession>();
+            var mockSession1 = new Mock<IConferenceSession>();
+            mockSession1.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(false);
+            sessions.Add(mockSession1.Object);
+            var mockSession2 = new Mock<IConferenceSession>();
+            mockSession1.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(true);
             sessions.Add(mockSession2.Object);
 
             // Act
-            //conferenceSessionBuilder.PopulateSessionsWithTalks(sessions, talks);
+            conferenceSessionBuilder.PopulateSessionsWithTalks(sessions, talks);
 
             // Assert
-            //Assert.True(mockSession1.Object.);
-            //TODO finish testing this shit. I'm too tired now
+            mockSession2.Verify(s => s.TryIncludeTalkInSession(It.IsAny<ITalk>()), Times.Exactly(4));
         }
+
     }
 }
