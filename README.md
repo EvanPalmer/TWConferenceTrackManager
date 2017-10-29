@@ -33,6 +33,34 @@ dotnet run talks.txt
 3. Output is written to Console, but is abstracted away so replace with any type of IOutputWriter you like
 4. Rules state no external dependencies, but I assume an IOC container is permissable along with my testing (Xunit) and mocking (Moq) frameworks.
 
+## Actual output of application, based on given input
+Track 1:  
+09:00AM Writing fast Tests Against Enterprise Rails 60min  
+10:00AM Ruby on Rails Legacy App Maintenance 60min  
+11:00AM Accounting-Driven Development 45min  
+12:00PM Lunch  
+01:00PM Communicating Over Distance 60min  
+02:00PM Overdoing it in Python 45min  
+02:45PM Pair Programming vs Noise 45min  
+03:30PM Woah 30min  
+04:00PM Ruby vs. Clojure for Back-End Development 30min  
+04:30PM User Interface CSS in Rails Apps 30min  
+05:00PM Networking Event  
+
+Track 2:  
+09:00AM Rails Magic 60min  
+10:00AM Ruby Errors from Mismatched Gem Versions 45min  
+10:45AM Clojure Ate Scala (on my project) 45min  
+11:30AM Sit Down and Write 30min  
+12:00PM Lunch  
+01:00PM Ruby on Rails: Why We Should Move On 60min  
+02:00PM Common Ruby Errors 45min  
+02:45PM Lua for the Masses 30min  
+03:15PM Programming in the Boondocks of Seattle 30min  
+03:45PM A World Without HackerNews 30min  
+04:15PM Rails for Python Developers lightning  
+05:00PM Networking Event  
+
 ## Thoughtworks Coding Assignment 2
 
 > You are planning a big programming conference and have received many proposals which have passed the initial screen process but you're having trouble fitting them into the time constraints of the day -- there are so many possibilities! So you write a program to do it for you.
@@ -105,30 +133,3 @@ Track 2:
 04:00PM Rails for Python Developers lightning  
 05:00PM Networking Event  
 
-## Actual output of application, based on given input
-Track 1:
-09:00AM Writing fast Tests Against Enterprise Rails 60min
-10:00AM Ruby on Rails Legacy App Maintenance 60min
-11:00AM Accounting-Driven Development 45min
-12:00PM Lunch
-01:00PM Communicating Over Distance 60min
-02:00PM Overdoing it in Python 45min
-02:45PM Pair Programming vs Noise 45min
-03:30PM Woah 30min
-04:00PM Ruby vs. Clojure for Back-End Development 30min
-04:30PM User Interface CSS in Rails Apps 30min
-05:00PM Networking Event
-
-Track 2:
-09:00AM Rails Magic 60min
-10:00AM Ruby Errors from Mismatched Gem Versions 45min
-10:45AM Clojure Ate Scala (on my project) 45min
-11:30AM Sit Down and Write 30min
-12:00PM Lunch
-01:00PM Ruby on Rails: Why We Should Move On 60min
-02:00PM Common Ruby Errors 45min
-02:45PM Lua for the Masses 30min
-03:15PM Programming in the Boondocks of Seattle 30min
-03:45PM A World Without HackerNews 30min
-04:15PM Rails for Python Developers lightning
-05:00PM Networking Event
