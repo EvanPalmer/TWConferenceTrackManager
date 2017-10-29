@@ -20,7 +20,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Factories
             _outputWriter = outputWriter;
         }
 
-        //todo should return concrete type
         public IConference Create(IList<ITalk> talks)
         {
             return new Conference(talks, _conferenceBuilder, _outputWriter);

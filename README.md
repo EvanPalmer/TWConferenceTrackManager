@@ -18,21 +18,20 @@ dotnet run talks.txt
 1. Domain models: Conference, ConferenceSession and Talk
 2. Value models are immutable
 3. Any complex logic from model is moved into a dependency
-3. Use Factory methods for Domain Model instantiation where required, which can handle downstream dependencies
-4. Factory methods are not under test to avoid integration testing
-5. AppConfiguration is not under test
-6. Automated Acceptance Test
+3. Use Factory methods for model instantiation where required
+4. Factory methods handle downstream dependencies
+5. Factory methods are not under test to avoid integration testing
+6. AppConfiguration is not under test (but should be)
 7. Console app starts with a single service locater call for IOC
 8. Basic handling of command line arguments
-9. Use ThoughtWorks.ConferenceTrackManager.Access namespace to build seams around dependencies. Sometimes there's a bit of untested logic in there, which isn't ideal.
+9. Use ThoughtWorks.ConferenceTrackManager.Access namespace to build seams around system dependencies. Sometimes there's a bit of untested logic in there, which isn't ideal.
 
 ## Assumptions
 
 1. If the application's algorithm can't fit all the talks in, it display's an error message and outputs the best effort
-2. Output is written to Console, but is abstracted away so replace with any type of IOutputWriter you like
-3. Used autofac for the IOC, but didn't set it up to be easily configurable
+2. If the file can't be read, output an error and display an empty conference.
+3. Output is written to Console, but is abstracted away so replace with any type of IOutputWriter you like
 4. Rules state no external dependencies, but I assume an IOC container is permissable along with my testing (Xunit) and mocking (Moq) frameworks.
-5. If the file can't be read, output an error and display an empty conference.
 
 ## Thoughtworks Coding Assignment 2
 
@@ -105,3 +104,31 @@ Track 2:
 03:00PM Ruby on Rails Legacy App Maintenance 60min  
 04:00PM Rails for Python Developers lightning  
 05:00PM Networking Event  
+
+## Actual output of application, based on given input
+Track 1:
+09:00AM Writing fast Tests Against Enterprise Rails 60min
+10:00AM Ruby on Rails Legacy App Maintenance 60min
+11:00AM Accounting-Driven Development 45min
+12:00PM Lunch
+01:00PM Communicating Over Distance 60min
+02:00PM Overdoing it in Python 45min
+02:45PM Pair Programming vs Noise 45min
+03:30PM Woah 30min
+04:00PM Ruby vs. Clojure for Back-End Development 30min
+04:30PM User Interface CSS in Rails Apps 30min
+05:00PM Networking Event
+
+Track 2:
+09:00AM Rails Magic 60min
+10:00AM Ruby Errors from Mismatched Gem Versions 45min
+10:45AM Clojure Ate Scala (on my project) 45min
+11:30AM Sit Down and Write 30min
+12:00PM Lunch
+01:00PM Ruby on Rails: Why We Should Move On 60min
+02:00PM Common Ruby Errors 45min
+02:45PM Lua for the Masses 30min
+03:15PM Programming in the Boondocks of Seattle 30min
+03:45PM A World Without HackerNews 30min
+04:15PM Rails for Python Developers lightning
+05:00PM Networking Event

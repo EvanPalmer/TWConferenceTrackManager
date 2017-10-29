@@ -68,7 +68,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
 
         protected void PrintTrackNumber()
         {
-            _outputWriter.WriteLine($"Track {_trackIndex + 1}");
+            _outputWriter.WriteLine($"Track {_trackIndex + 1}:");
         }
 
         private int ConvertTrackIndexToTrackNumber()

@@ -46,7 +46,6 @@ namespace ThoughtWorks.ConferenceTrackManager.App
 
         public PopulateSessionsWithTalksResponse PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks)
         {
-            // TODO Can improve
             var sessionIndex = 0;
             var failedAttempts = 0;
             var allSessionsFailed = false;
