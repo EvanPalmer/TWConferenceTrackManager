@@ -72,7 +72,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
 
             // Assert
-            conferenceSessionFactory.Verify(csf => csf.CreateMorningConferenceSession(), Times.Exactly(2));
+            conferenceSessionFactory.Verify(csf => csf.CreateMorningConferenceSession(It.IsAny<int>()), Times.Exactly(2));
         }
 
 

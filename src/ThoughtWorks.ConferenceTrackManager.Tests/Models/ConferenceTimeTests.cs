@@ -13,7 +13,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var time = new ConferenceTime(0);
 
             // Act
-            var midnight = time.HourAsTwentFourHourInt;
+            var midnight = time.HourAsTwentyFourHourInt;
 
             // Assert
             Assert.Equal(0, midnight);
@@ -31,7 +31,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var time = new ConferenceTime(inputNumber    );
 
             // Act
-            var result = time.HourAsTwentFourHourInt;
+            var result = time.HourAsTwentyFourHourInt;
 
             // Assert
             Assert.Equal(expect24Hour, result);
@@ -70,10 +70,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var time = new ConferenceTime(0);
 
             // Act
-            time.AddMinutes(60);
+            var updateTime = time.AddMinutes(60);
 
             // Assert
-            Assert.Equal("01:00AM", time.TimeAsTwelveHourString());
+            Assert.Equal("01:00AM", updateTime.TimeAsTwelveHourString());
         }
 
         [Fact]
@@ -83,10 +83,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var time = new ConferenceTime(0);
 
             // Act
-            time.AddMinutes(30);
+            var updateTime = time.AddMinutes(30);
 
             // Assert
-            Assert.Equal("12:30AM", time.TimeAsTwelveHourString());
+            Assert.Equal("12:30AM", updateTime.TimeAsTwelveHourString());
         }
 
         [Fact]
@@ -96,10 +96,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var time = new ConferenceTime(0);
 
             // Act
-            time.AddMinutes(70);
+            var updateTime = time.AddMinutes(70);
 
             // Assert
-            Assert.Equal("01:10AM", time.TimeAsTwelveHourString());
+            Assert.Equal("01:10AM", updateTime.TimeAsTwelveHourString());
         }
 
         [Fact]
@@ -109,10 +109,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var time = new ConferenceTime(1);
 
             // Act
-            time.RoundToWholeHour();    
+            var updateTime = time.RoundToWholeHour();    
 
             // Assert
-            Assert.Equal(1, time.HourAsTwentFourHourInt);
+            Assert.Equal(1, updateTime.HourAsTwentyFourHourInt);
         }
 
         [Fact]
@@ -120,13 +120,13 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
         {
             // Arrange
             var time = new ConferenceTime(1);
-            time.AddMinutes(1);
+            time = time.AddMinutes(1);
 
             // Act
-            time.RoundToWholeHour();
+            var updateTime = time.RoundToWholeHour();
 
             // Assert
-            Assert.Equal(2, time.HourAsTwentFourHourInt);
+            Assert.Equal(2, updateTime.HourAsTwentyFourHourInt);
         }
 
         [Fact]

@@ -29,9 +29,9 @@ namespace ThoughtWorks.ConferenceTrackManager.App
         public IList<IConferenceSession> CreateSessionsOrEmptyList()
         {
             var sessions = new List<IConferenceSession>();
-            for (var trackNumber = 0; trackNumber < _appConfiguration.NumberOfTracks; trackNumber++)
+            for (var trackIndex = 0; trackIndex < _appConfiguration.NumberOfTracks; trackIndex++)
             {
-                var morningSession = _conferenceSessionFactory.CreateMorningConferenceSession();
+                var morningSession = _conferenceSessionFactory.CreateMorningConferenceSession(trackIndex);
                 var afternoonSession = _conferenceSessionFactory.CreateAfternoonConferenceSession();
                 sessions.Add(morningSession);
                 sessions.Add(afternoonSession);

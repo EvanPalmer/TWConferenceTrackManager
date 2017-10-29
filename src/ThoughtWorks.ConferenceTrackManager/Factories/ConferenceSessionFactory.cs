@@ -6,7 +6,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Factories
 {
     public interface IConferenceSessionFactory
     {
-        IConferenceSession CreateMorningConferenceSession();
+        IConferenceSession CreateMorningConferenceSession(int trackIndex);
         IConferenceSession CreateAfternoonConferenceSession();
     }
 
@@ -21,11 +21,11 @@ namespace ThoughtWorks.ConferenceTrackManager.Factories
             _outputWriter = outputWriter;
         }
 
-        public IConferenceSession CreateMorningConferenceSession()
+        public IConferenceSession CreateMorningConferenceSession(int trackIndex)
         {
             return new MorningConferenceSession(_appConfiguration.MorningSessionStartHourAsTwentyFourHourInt, 
                                                 _appConfiguration.LunchTimeStartHourAsTwentyFourHourInt, 
-                                                _appConfiguration.NumberOfTracks, 
+                                                trackIndex, 
                                                 _outputWriter);
         }
 
@@ -34,7 +34,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Factories
             return new AfternoonConferenceSession(_appConfiguration.AfternoonSessionStartHourAsTwentyFourHourInt, 
                                                   _appConfiguration.NetworkingSessionEarliestStartHourAsTwentyFourHourInt, 
                                                   _appConfiguration.NetworkingSessionLatestStartHourAsTwentyFourHourInt, 
-                                                  _appConfiguration.NumberOfTracks,
                                                   _outputWriter);
         }
     }

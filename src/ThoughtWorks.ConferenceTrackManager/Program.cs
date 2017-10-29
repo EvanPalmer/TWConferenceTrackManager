@@ -11,13 +11,10 @@ namespace ThoughtWorks.ConferenceTrackManager
         public static void Main(string[] args)
         {
             // todo I think there's a nice way to handle arguments. Oh hangon, I think that's powershell
-            System.Console.ReadKey();
-
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AsImplementedInterfaces();
             Container = builder.Build();
 
-            args = new[] { "talks.txt" };
             using(var scope = Container.BeginLifetimeScope())
             {
                 var conferenceManager = scope.Resolve<IConferenceManager>();

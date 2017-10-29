@@ -13,7 +13,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
         {
             // Arrange
             var outputWriter = new Mock<IOutputWriter>();
-            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, 1, outputWriter.Object);
+            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, outputWriter.Object);
             afternoonConferenceSession.TryIncludeTalkInSession(new Talk("Talk Number One 60mins"));
             afternoonConferenceSession.TryIncludeTalkInSession(new Talk("Talk Number Two 60mins"));
 
@@ -30,7 +30,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
         {
             // Arrange
             var outputWriter = new Mock<IOutputWriter>();
-            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, 0, outputWriter.Object);
+            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, outputWriter.Object);
 
             // Act
             afternoonConferenceSession.Print();
@@ -44,7 +44,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
         {
             // Arrange
             var outputWriter = new Mock<IOutputWriter>();
-            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, 1, outputWriter.Object);
+            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, outputWriter.Object);
             afternoonConferenceSession.TryIncludeTalkInSession(new Talk("Talk Number One 60mins"));
             afternoonConferenceSession.TryIncludeTalkInSession(new Talk("Talk Number Two 60mins"));
             afternoonConferenceSession.TryIncludeTalkInSession(new Talk("Talk Number Three 60mins"));
@@ -62,7 +62,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
         {
             // Arrange
             var outputWriter = new Mock<IOutputWriter>();
-            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, 1, outputWriter.Object);
+            var afternoonConferenceSession = new AfternoonConferenceSession(0, 2, 3, outputWriter.Object);
             afternoonConferenceSession.TryIncludeTalkInSession(new Talk("Talk Number One 60mins"));
             afternoonConferenceSession.TryIncludeTalkInSession(new Talk("Talk Number Two 60mins"));
 

@@ -39,7 +39,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var session = new MorningConferenceSession(1, 2, 1);
             var result = session.TryIncludeTalkInSession(new Talk("Some talk 30mins"));
 
-
             // Act
             result = session.TryIncludeTalkInSession(new Talk("Some talk 40mins"));
 

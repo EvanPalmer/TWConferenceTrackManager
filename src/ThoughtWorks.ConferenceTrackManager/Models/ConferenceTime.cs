@@ -15,7 +15,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
             _startTime = date;
         }
 
-        public int HourAsTwentFourHourInt
+        public int HourAsTwentyFourHourInt
         {
             get
             {
@@ -23,24 +23,30 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
             }
         }   
 
-        public void AddMinutes(int minutesToAdd)
+        public ConferenceTime AddMinutes(int minutesToAdd)
         {
-            _startTime = _startTime.AddMinutes(minutesToAdd);
+            var minutesAdded = _startTime.AddMinutes(minutesToAdd);
+            var conferenceTime = new ConferenceTime(minutesAdded);
+            return conferenceTime;
         }
 
-
-        public void SubtractMinutes(int minutesToAdd)
+        public ConferenceTime SubtractMinutes(int minutesToAdd)
         {
-            _startTime = _startTime.AddMinutes(minutesToAdd * -1);
+            var minutesSubtracted = _startTime.AddMinutes(minutesToAdd * -1);
+            var conferenceTime = new ConferenceTime(minutesSubtracted);
+            return conferenceTime;
         }
 
-        public void RoundToWholeHour()
+        public ConferenceTime RoundToWholeHour()
         {
             const int minutesInOneHour = 60;
+            var minutesAdded = _startTime;
             if(_startTime.Minute > 0)  
             {
-                _startTime = _startTime.AddMinutes(minutesInOneHour - _startTime.Minute);
+                minutesAdded = _startTime.AddMinutes(minutesInOneHour - _startTime.Minute);
             }
+            var conferenceTime = new ConferenceTime(minutesAdded);
+            return conferenceTime;
         }   
 
         public string TimeAsTwelveHourString()

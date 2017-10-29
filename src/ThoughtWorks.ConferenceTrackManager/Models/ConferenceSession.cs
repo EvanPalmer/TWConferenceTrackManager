@@ -10,20 +10,17 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
         void Print();
     }
 
-    // Todo replace inheritacnce with composition
     public abstract class ConferenceSession : IConferenceSession
     {
         // todo mkaes these private or protected fields
         protected int _startHour;
         protected int _endHour;
-        protected int _trackIndex;
         protected ConferenceTime _currentSessionEndtime;
         protected List<ITalk> _talks;
         protected IOutputWriter _outputWriter;
 
-        public ConferenceSession(int startHour, int endHour, int trackIndex, IOutputWriter outputWriter)
+        public ConferenceSession(int startHour, int endHour, IOutputWriter outputWriter)
         {
-            _trackIndex = trackIndex;
             _endHour = endHour;
             _startHour = startHour;
             _talks = new List<ITalk>();
@@ -35,20 +32,41 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
 
         public bool TryIncludeTalkInSession(ITalk talk)
         {
-            _currentSessionEndtime.AddMinutes(talk.LengthInMinutes);
+            var potentialSessionEndTime = _currentSessionEndtime.AddMinutes(talk.LengthInMinutes);
             var latestSessionEndtime = new ConferenceTime(_endHour);
-            var talkCanFitIsSession = _currentSessionEndtime.IsLessThanOrEqualTo(latestSessionEndtime);
+            var talkCanFitIsSession = potentialSessionEndTime.IsLessThanOrEqualTo(latestSessionEndtime);
 
             if(talkCanFitIsSession)
             {
                 _talks.Add(talk);
-            } else { 
-                // todo this sucks
-                _currentSessionEndtime.SubtractMinutes(talk.LengthInMinutes);
+                _currentSessionEndtime = potentialSessionEndTime;
             }
 
             return talkCanFitIsSession;
         }
+
+        protected ConferenceTime PrintTalksWithTime(ConferenceTime nextAvailableTimeToStartTalk)
+        {
+            foreach (var talk in _talks)
+            {
+                _outputWriter.WriteLine($"{nextAvailableTimeToStartTalk.TimeAsTwelveHourString()} {talk.TalkDefinition}");
+                nextAvailableTimeToStartTalk = nextAvailableTimeToStartTalk.AddMinutes(talk.LengthInMinutes);
+            }
+            return nextAvailableTimeToStartTalk;
+        }
+    }
+
+    public class MorningConferenceSession : ConferenceSession
+    {
+        protected int _trackIndex;
+
+        public MorningConferenceSession(int startHour, int endHour, int trackIndex, IOutputWriter outputWriter = null)
+            : base(startHour, endHour, outputWriter)
+        {
+            _outputWriter = outputWriter ?? new ConsoleOutputWriter();
+            _trackIndex = trackIndex;
+        }       
+
         protected void PrintTrackNumber()
         {
             _outputWriter.WriteLine($"Track {_trackIndex + 1}");
@@ -58,24 +76,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
         {
             return _trackIndex + 1;
         }
-
-        protected void PrintTalksWithTime(ConferenceTime nextAvailableTimeToStartTalk)
-        {
-            foreach (var talk in _talks)
-            {
-                _outputWriter.WriteLine($"{nextAvailableTimeToStartTalk.TimeAsTwelveHourString()} {talk.TalkDefinition}");
-                nextAvailableTimeToStartTalk.AddMinutes(talk.LengthInMinutes);
-            }
-        }
-    }
-
-    public class MorningConferenceSession : ConferenceSession
-    {
-        public MorningConferenceSession(int startHour, int endHour, int trackNumber, IOutputWriter outputWriter = null)
-            : base(startHour, endHour, trackNumber, outputWriter)
-        {
-            _outputWriter = outputWriter ?? new ConsoleOutputWriter();
-        }       
 
         public override void Print()
         {
@@ -93,8 +93,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
         readonly private int _networkingSessionEarliestStartHour;
         readonly private int _networkingSessionLatestStartHour;
 
-        public AfternoonConferenceSession(int startHour, int networkingSessionEarliestStartHour, int networkingSessionLatestStartHour, int trackIndex, IOutputWriter outputWriter = null)
-            : base(startHour, networkingSessionLatestStartHour, trackIndex, outputWriter)
+        public AfternoonConferenceSession(int startHour, int networkingSessionEarliestStartHour, int networkingSessionLatestStartHour, IOutputWriter outputWriter = null)
+            : base(startHour, networkingSessionLatestStartHour, outputWriter)
         {
             _networkingSessionEarliestStartHour = networkingSessionEarliestStartHour;
             _networkingSessionLatestStartHour = networkingSessionLatestStartHour;
@@ -103,12 +103,11 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
         public override void Print()
         {
             var nextAvailableTimeToStartTalk = new ConferenceTime(_startHour);
-            PrintTalksWithTime(nextAvailableTimeToStartTalk);
-            nextAvailableTimeToStartTalk.RoundToWholeHour();
-
+            nextAvailableTimeToStartTalk = PrintTalksWithTime(nextAvailableTimeToStartTalk);
+            nextAvailableTimeToStartTalk = nextAvailableTimeToStartTalk.RoundToWholeHour();
             var sessionEndTime = new ConferenceTime(_networkingSessionLatestStartHour);
                    
-            if(nextAvailableTimeToStartTalk.HourAsTwentFourHourInt <= _networkingSessionEarliestStartHour)
+            if(nextAvailableTimeToStartTalk.HourAsTwentyFourHourInt <= _networkingSessionEarliestStartHour)
             {
                 sessionEndTime = new ConferenceTime(_networkingSessionEarliestStartHour);
             }
