@@ -32,8 +32,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Factories
         public IConferenceSession CreateAfternoonConferenceSession()
         {
             return new AfternoonConferenceSession(_appConfiguration.AfternoonSessionStartHourAsTwentyFourHourInt, 
-                                                  _appConfiguration.NetworkingSessionLatestStartHourAsTwentyFourHourInt, 
                                                   _appConfiguration.NetworkingSessionEarliestStartHourAsTwentyFourHourInt, 
+                                                  _appConfiguration.NetworkingSessionLatestStartHourAsTwentyFourHourInt, 
                                                   _appConfiguration.NumberOfTracks,
                                                   _outputWriter);
         }

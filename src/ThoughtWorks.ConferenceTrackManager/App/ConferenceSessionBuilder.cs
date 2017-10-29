@@ -52,25 +52,30 @@ namespace ThoughtWorks.ConferenceTrackManager.App
             var sessionIndex = 0;
             var failedAttempts = 0;
             var allSessionsFailed = false;
+            var successfullyAddedTalkToSession = false;
 
             foreach (var talk in allTalks)
             {
                 do
                 {
-                    var successfullyAddedTalkToSession = sessions[sessionIndex].TryIncludeTalkInSession(talk);
+                    successfullyAddedTalkToSession = sessions[sessionIndex].TryIncludeTalkInSession(talk);
                     if(!successfullyAddedTalkToSession)
                     {
                         failedAttempts = failedAttempts + 1;
                         allSessionsFailed = failedAttempts == sessions.Count();
                     }else{
                         failedAttempts = 0;
+                        allSessionsFailed = false;
                     }
                     sessionIndex = sessionIndex + 1;
-                } while (allSessionsFailed && sessionIndex < sessions.Count());
+                    Console.WriteLine("AllSessionsFaild: " + allSessionsFailed);
+                    Console.WriteLine("sessionIndex < sessions.Count(): " + (sessionIndex < sessions.Count()));
+                } while (!successfullyAddedTalkToSession && !allSessionsFailed && sessionIndex < sessions.Count());
 
                 if (allSessionsFailed)
                 {
-                    throw new ConferenceSetUpException("Didn't add a talk! The conference is full and I don't know what to do about it!");
+                    break;
+                    // throw new ConferenceSetUpException("Didn't add a talk! The conference is full and I don't know what to do about it!");
                 }
 
                 if (sessionIndex == sessions.Count())
