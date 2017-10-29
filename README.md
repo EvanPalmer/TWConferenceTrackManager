@@ -2,6 +2,8 @@
 
 ## Run instructions For Mac
 
+Install [.Net Core for MacOS](https://www.microsoft.com/net/core#macos)
+
 ``` 
 git clone https://github.com/EvanPalmer/TWConferenceTrackManager.git
 cd TWConferenceTrackManager/src/
