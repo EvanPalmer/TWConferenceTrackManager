@@ -31,7 +31,7 @@ dotnet run talks.txt
 1. If the application's algorithm can't fit all the talks in, it display's an error message and outputs the best effort
 2. If the file can't be read, output an error and display an empty conference.
 3. Output is written to Console, but is abstracted away so replace with any type of IOutputWriter you like
-4. Rules state no external dependencies, but I assume an IOC container is permissable along with my testing (Xunit) and mocking (Moq) frameworks.
+4. Rules state no external dependencies, but I assume an IOC container is permissible along with my testing (Xunit) and mocking (Moq) frameworks.
 
 ## Actual output of application, based on given input
 Track 1:  
