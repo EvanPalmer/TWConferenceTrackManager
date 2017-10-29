@@ -24,10 +24,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
         }
 
         // TODO: Use proper IOC
-        public Conference(IList<ITalk> allTalks, IConferenceSessionBuilder conferenceSessionBuilder = null)
+        public Conference(IList<ITalk> talks, IConferenceSessionBuilder conferenceSessionBuilder)
         {
-            _conferenceSessionBuilder = conferenceSessionBuilder ?? new ConferenceSessionBuilder();
-            _allTalks = allTalks;
+            _allTalks = talks;
+            _conferenceSessionBuilder = conferenceSessionBuilder;
         }
 
         public void Print()

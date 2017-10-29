@@ -13,9 +13,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
     {
         readonly IOutputWriter _outputWriter;
 
-        public AppArgument(IOutputWriter outputWriter = null)
+        public AppArgument(IOutputWriter outputWriter)
         {
-            _outputWriter = outputWriter ??  new ConsoleOutputWriter();
+            _outputWriter = outputWriter;
         }
 
         public bool TryParse(string[] args, out string filename)

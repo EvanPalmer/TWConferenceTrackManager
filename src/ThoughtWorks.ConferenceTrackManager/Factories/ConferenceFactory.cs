@@ -1,18 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using ThoughtWorks.ConferenceTrackManager.App;
 using ThoughtWorks.ConferenceTrackManager.Models;
 
 namespace ThoughtWorks.ConferenceTrackManager.Factories
 {
     public interface IConferenceFactory
     {
-        IConference Build(IList<ITalk> allTalks);
+        IConference Create(IList<ITalk> talks);
     }
-
     public class ConferenceFactory : IConferenceFactory
     {
-        public IConference Build(IList<ITalk> allTalks)
+        readonly IConferenceSessionBuilder _conferenceBuilder;
+
+        public ConferenceFactory(IConferenceSessionBuilder conferenceBuilder)
         {
-            return new Conference(allTalks);
+            _conferenceBuilder = conferenceBuilder;
+        }
+
+        //todo should return concrete type
+        public IConference Create(IList<ITalk> talks)
+        {
+            return new Conference(talks, _conferenceBuilder);
         }
     }
 }

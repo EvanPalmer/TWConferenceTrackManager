@@ -27,7 +27,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
             _endHour = endHour;
             _startHour = startHour;
             _talks = new List<ITalk>();
-            _outputWriter = outputWriter ?? new ConsoleOutputWriter();
+            _outputWriter = outputWriter;
             _currentSessionEndtime = new ConferenceTime(startHour);
         }
 

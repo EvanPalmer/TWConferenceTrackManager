@@ -6,6 +6,7 @@ using ThoughtWorks.ConferenceTrackManager.Configuration;
 using ThoughtWorks.ConferenceTrackManager.Models;
 using Moq;
 using Xunit;
+using ThoughtWorks.ConferenceTrackManager.Factories;
 
 namespace ThoughtWorks.ConferenceTrackManager.Tests.App
 {
@@ -15,10 +16,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void CreateSessionsOrEmptyList_BuildsNoSessions_WhenNoTracksConfigured()
         {
             // Arrange
-            var mockConfig = new Mock<IAppConfiguration>();
-            mockConfig.Setup(c => c.NumberOfTracks).Returns(0);
-
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(mockConfig.Object);
+            var config = new Mock<IAppConfiguration>();
+            config.Setup(c => c.NumberOfTracks).Returns(0);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+			var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
             var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
@@ -31,10 +32,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void CreateSessionsOrEmptyList_BuildsTwoSessions_WhenOneTracksConfigured()
         {
             // Arrange
-            var mockConfig = new Mock<IAppConfiguration>();
-            mockConfig.Setup(c => c.NumberOfTracks).Returns(1);
-
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(mockConfig.Object);
+            var config = new Mock<IAppConfiguration>();
+            config.Setup(c => c.NumberOfTracks).Returns(1);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
             var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
@@ -47,10 +48,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void CreateSessionsOrEmptyList_BuildsFourSessions_WhenTwoTracksConfigured()
         {
             // Arrange
-            var mockConfig = new Mock<IAppConfiguration>();
-            mockConfig.Setup(c => c.NumberOfTracks).Returns(2);
-
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(mockConfig.Object);
+            var config = new Mock<IAppConfiguration>();
+            config.Setup(c => c.NumberOfTracks).Returns(2);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
             var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
@@ -62,16 +63,16 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void CreateSessionsOrEmptyList_BuildsAMorningSession_WhenOneTracksConfigured()
         {
             // Arrange
-            var mockConfig = new Mock<IAppConfiguration>();
-            mockConfig.Setup(c => c.NumberOfTracks).Returns(2);
-
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(mockConfig.Object);
+            var config = new Mock<IAppConfiguration>();
+            config.Setup(c => c.NumberOfTracks).Returns(2);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
             var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
 
             // Assert
-            Assert.IsType(typeof(MorningConferenceSession), sessions.First());
+            conferenceSessionFactory.Verify(csf => csf.CreateMorningConferenceSession(), Times.Exactly(2));
         }
 
 
@@ -79,24 +80,27 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void CreateSessionsOrEmptyList_BuildsAnAfternoonSession_WhenOneTracksConfigured()
         {
             // Arrange
-            var mockConfig = new Mock<IAppConfiguration>();
-            mockConfig.Setup(c => c.NumberOfTracks).Returns(2);
-
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(mockConfig.Object);
+            var config = new Mock<IAppConfiguration>();
+            config.Setup(c => c.NumberOfTracks).Returns(2);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
             var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
 
             // Assert
-            Assert.IsType(typeof(AfternoonConferenceSession), sessions.Last());
+            conferenceSessionFactory.Verify(csf => csf.CreateAfternoonConferenceSession(), Times.Exactly(2));
         }
+
+
 
         [Fact]
         public void SortTalks_OrdersSortsDecendingByTime()
         {
             // Arrange
             var config = new Mock<IAppConfiguration>();
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
             var talks = new List<ITalk> {
                 new Talk("Some short talk 1min"),
                 new Talk("Some longer talk 10min"),
@@ -116,7 +120,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(2);
 
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
             var talks = new List<ITalk> {
                 new Talk("A talk 10min"),
                 new Talk("Some talk 10min"),
@@ -143,7 +148,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(2);
 
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object);
+            var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
+            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
             var talks = new List<ITalk> {
                 new Talk("A talk 10min"),
                 new Talk("Some talk 10min"),
@@ -155,8 +161,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var mockSession1 = new Mock<IConferenceSession>();
             mockSession1.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(false);
             sessions.Add(mockSession1.Object);
+
             var mockSession2 = new Mock<IConferenceSession>();
-            mockSession1.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(true);
+            mockSession2.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(true);
             sessions.Add(mockSession2.Object);
 
             // Act

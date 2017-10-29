@@ -36,8 +36,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(true);
+            var conference = new Mock<IConference>();
             var conferenceFactory = new Mock<IConferenceFactory>();
-            conferenceFactory.Setup(cf => cf.Build(It.IsAny<IList<ITalk>>())).Returns(new Mock<IConference>().Object);
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();
 
@@ -57,7 +58,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(false);
+            var conference = new Mock<IConference>();
             var conferenceFactory = new Mock<IConferenceFactory>();
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();
 
@@ -72,13 +75,14 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
 
         [Fact]
         public void Run_BuildsTalks_WhenArgumentsAreValid()
-        {
+        {   
             // Arrange
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(true);
+            var conference = new Mock<IConference>();
             var conferenceFactory = new Mock<IConferenceFactory>();
-            conferenceFactory.Setup(cf => cf.Build(It.IsAny<IList<ITalk>>())).Returns(new Mock<IConference>().Object);
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();
 
@@ -88,7 +92,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             conferenceManager.Run(new string[] { });
 
             // Assert
-            talkFactory.Verify(tf => tf.BuildTalkCollectionFromInput(It.IsAny<List<string>>()), Times.Once);
+            talkFactory.Verify(tf => tf.CreateTalkCollectionFromInput(It.IsAny<List<string>>()), Times.Once);
         }
 
         [Fact]
@@ -98,7 +102,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(false);
+            var conference = new Mock<IConference>();
             var conferenceFactory = new Mock<IConferenceFactory>();
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();
 
@@ -108,7 +114,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             conferenceManager.Run(new string[] { });
 
             // Assert
-            talkFactory.Verify(tf => tf.BuildTalkCollectionFromInput(It.IsAny<List<string>>()), Times.Never);
+            talkFactory.Verify(tf => tf.CreateTalkCollectionFromInput(It.IsAny<List<string>>()), Times.Never);
         }
 
         [Fact]
@@ -118,8 +124,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(true);
+            var conference = new Mock<IConference>();
             var conferenceFactory = new Mock<IConferenceFactory>();
-            conferenceFactory.Setup(cf => cf.Build(It.IsAny<IList<ITalk>>())).Returns(new Mock<IConference>().Object);
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();
 
@@ -129,7 +136,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             conferenceManager.Run(new string[] { });
 
             // Assert
-            conferenceFactory.Verify(cf => cf.Build(It.IsAny<IList<ITalk>>()));
+            conferenceFactory.Verify(cf => cf.Create(It.IsAny<IList<ITalk>>()), Times.Once());
         }
 
         [Fact]
@@ -139,7 +146,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(false);
+            var conference = new Mock<IConference>();
             var conferenceFactory = new Mock<IConferenceFactory>();
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
+
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();
 
@@ -149,7 +159,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             conferenceManager.Run(new string[] { });
 
             // Assert
-            talkFactory.Verify(tf => tf.BuildTalkCollectionFromInput(It.IsAny<List<string>>()), Times.Never);
+            conferenceFactory.Verify(cf => cf.Create(It.IsAny<IList<ITalk>>()), Times.Never());
         }
 
         [Fact]
@@ -159,9 +169,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(true);
-            var conferenceFactory = new Mock<IConferenceFactory>();
             var conference = new Mock<IConference>();
-            conferenceFactory.Setup(cf => cf.Build(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
+            var conferenceFactory = new Mock<IConferenceFactory>();
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();
 
@@ -181,9 +191,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var arguments = new Mock<IAppArgument>();
             var filename = It.IsAny<string>();
             arguments.Setup(a => a.TryParse(It.IsAny<string[]>(), out filename)).Returns(false);
-            var conferenceFactory = new Mock<IConferenceFactory>();
             var conference = new Mock<IConference>();
-            conferenceFactory.Setup(cf => cf.Build(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
+            var conferenceFactory = new Mock<IConferenceFactory>();
+            conferenceFactory.Setup(cf => cf.Create(It.IsAny<IList<ITalk>>())).Returns(conference.Object);
 
             var talkFactory = new Mock<ITalkFactory>();
             var fileSystem = new Mock<IFileSystem>();

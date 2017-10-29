@@ -5,19 +5,24 @@ using ThoughtWorks.ConferenceTrackManager.Access;
 
 namespace ThoughtWorks.ConferenceTrackManager.App
 {
-    public class ConferenceManager
+    public interface IConferenceManager
     {
-        private IConferenceFactory _conferenceFactory;
+        void Run(string[] args);
+    }
+
+    public class ConferenceManager : IConferenceManager
+    {
         private ITalkFactory _talkFactory;
         private IAppArgument _arguments;
         private IFileSystem _fileSystem;
+        private IConferenceFactory _conferenceFactory;
 
         public ConferenceManager(IAppArgument arguments = null, IConferenceFactory conferenceFactory = null, ITalkFactory talkFactory = null, IFileSystem fileSystem = null)
         {
-            _arguments = arguments ?? new AppArgument();
-            _conferenceFactory = conferenceFactory ?? new ConferenceFactory();
-            _talkFactory = talkFactory ?? new TalkFactory();
-            _fileSystem = fileSystem ?? new FileSystem();
+            _arguments = arguments;
+            _conferenceFactory = conferenceFactory;
+            _talkFactory = talkFactory;
+            _fileSystem = fileSystem;
         }
 
         public void Run(string[] args)
@@ -29,8 +34,8 @@ namespace ThoughtWorks.ConferenceTrackManager.App
             {
                 // todo what if there's no input file?
                 var talkDefinitionsList =  _fileSystem.ReadFileAsStringListOrEmptyList(filename);
-                var allTalks = _talkFactory.BuildTalkCollectionFromInput(talkDefinitionsList);
-                var conference = _conferenceFactory.Build(allTalks);
+                var allTalks = _talkFactory.CreateTalkCollectionFromInput(talkDefinitionsList);
+                var conference = _conferenceFactory.Create(allTalks);
                 conference.Print();
             }
         }

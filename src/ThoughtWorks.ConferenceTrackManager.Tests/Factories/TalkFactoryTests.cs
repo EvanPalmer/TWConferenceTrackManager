@@ -22,7 +22,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Factories
             var talkFactory = new TalkFactory();
 
             // Act
-            var talks = talkFactory.BuildTalkCollectionFromInput(new List<string>());
+            var talks = talkFactory.CreateTalkCollectionFromInput(new List<string>());
 
             // Assert
             Assert.Equal(0, talks.Count);
@@ -35,7 +35,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Factories
             var talkFactory = new TalkFactory();
 
             // Act
-            var talks = talkFactory.BuildTalkCollectionFromInput(fileContents);
+            var talks = talkFactory.CreateTalkCollectionFromInput(fileContents);
 
             // Assert
             Assert.Equal(3, talks.Count);

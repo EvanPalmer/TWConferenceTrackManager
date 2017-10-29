@@ -6,12 +6,12 @@ namespace ThoughtWorks.ConferenceTrackManager.Factories
 {
     public interface ITalkFactory
     {
-        List<ITalk> BuildTalkCollectionFromInput(List<string> input);
+        List<ITalk> CreateTalkCollectionFromInput(List<string> input);
     }
 
     public class TalkFactory : ITalkFactory
     {
-        public List<ITalk> BuildTalkCollectionFromInput(List<string> talkDefinitionsList)
+        public List<ITalk> CreateTalkCollectionFromInput(List<string> talkDefinitionsList)
         {
             var allTalks = new List<ITalk>();
 

@@ -4,6 +4,7 @@ using ThoughtWorks.ConferenceTrackManager.Configuration;
 using System.Linq;
 using System;
 using ThoughtWorks.ConferenceTrackManager.Exceptions;
+using ThoughtWorks.ConferenceTrackManager.Factories;
 
 namespace ThoughtWorks.ConferenceTrackManager.App
 {
@@ -17,10 +18,12 @@ namespace ThoughtWorks.ConferenceTrackManager.App
     public class ConferenceSessionBuilder : IConferenceSessionBuilder
     {
         private readonly IAppConfiguration _appConfiguration;
+        readonly IConferenceSessionFactory _conferenceSessionFactory;
 
-        public ConferenceSessionBuilder(IAppConfiguration appConfiguration = null)
+        public ConferenceSessionBuilder(IAppConfiguration appConfiguration, IConferenceSessionFactory conferenceSessionFactory)
         {
-            _appConfiguration = appConfiguration ?? new AppConfiguration();
+            _conferenceSessionFactory = conferenceSessionFactory;
+            _appConfiguration = appConfiguration;
         }
 
         public IList<IConferenceSession> CreateSessionsOrEmptyList()
@@ -28,10 +31,10 @@ namespace ThoughtWorks.ConferenceTrackManager.App
             var sessions = new List<IConferenceSession>();
             for (var trackNumber = 0; trackNumber < _appConfiguration.NumberOfTracks; trackNumber++)
             {
-                var morningSession = new MorningConferenceSession(_appConfiguration.MorningSessionStartHourAsTwentyFourHourInt, _appConfiguration.LunchTimeStartHourAsTwentyFourHourInt, trackNumber);
-                var lateSession = new AfternoonConferenceSession(_appConfiguration.AfternoonSessionStartHourAsTwentyFourHourInt, _appConfiguration.NetworkingSessionEarliestStartHourAsTwentyFourHourInt, _appConfiguration.NetworkingSessionLatestStartHourAsTwentyFourHourInt, trackNumber);
+                var morningSession = _conferenceSessionFactory.CreateMorningConferenceSession();
+                var afternoonSession = _conferenceSessionFactory.CreateAfternoonConferenceSession();
                 sessions.Add(morningSession);
-                sessions.Add(lateSession);
+                sessions.Add(afternoonSession);
             }
 
             return sessions;
@@ -46,7 +49,6 @@ namespace ThoughtWorks.ConferenceTrackManager.App
         public void PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks)
         {
             //todo make this smaller And better tested.
-
             var sessionIndex = 0;
             var failedAttempts = 0;
             var allSessionsFailed = false;
@@ -64,7 +66,7 @@ namespace ThoughtWorks.ConferenceTrackManager.App
                         failedAttempts = 0;
                     }
                     sessionIndex = sessionIndex + 1;
-                } while (allSessionsFailed && sessionIndex < sessions.Count());
+                } while (!allSessionsFailed && sessionIndex < sessions.Count());
 
                 if (allSessionsFailed)
                 {
