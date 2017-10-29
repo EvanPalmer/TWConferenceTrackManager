@@ -68,8 +68,6 @@ namespace ThoughtWorks.ConferenceTrackManager.App
                         allSessionsFailed = false;
                     }
                     sessionIndex = sessionIndex + 1;
-                    Console.WriteLine("AllSessionsFaild: " + allSessionsFailed);
-                    Console.WriteLine("sessionIndex < sessions.Count(): " + (sessionIndex < sessions.Count()));
                 } while (!successfullyAddedTalkToSession && !allSessionsFailed && sessionIndex < sessions.Count());
 
                 if (allSessionsFailed)
