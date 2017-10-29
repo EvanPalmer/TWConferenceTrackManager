@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using ThoughtWorks.ConferenceTrackManager.Access;
 
 namespace ThoughtWorks.ConferenceTrackManager.Configuration
 {
     //todo: unit test this
     //todo strongly type this too
-    //todo make the detauls work
+    //todo make the detaults work
     public interface IAppConfiguration
     {
         int NumberOfTracks { get; }
@@ -20,13 +21,22 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
     public class AppConfiguration : IAppConfiguration
     {
         private IConfigurationSection _appSettings;
+        private readonly IOutputWriter _outputWriter;
 
-        public AppConfiguration()
+        public AppConfiguration(IOutputWriter outputWriter)
         {
-            // todo, try catch!
-            var builder = new ConfigurationBuilder()
+            const string settingsFilename = "appSettings.json";
+            _outputWriter = outputWriter;
+            var builder = new ConfigurationBuilder();
+
+            try
+            {
+                builder
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true);
+                .AddJsonFile(settingsFilename, optional: true, reloadOnChange: true);
+            }catch{
+                outputWriter.WriteLine($"Error loading {settingsFilename}");
+            }
             var configuration = builder.Build();
             _appSettings = configuration.GetSection("AppSettings");
         }
@@ -38,6 +48,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
                 const int defaultNumberOfTracks = 2;
                 var numberOfTracks = defaultNumberOfTracks;
                 var success = int.TryParse(_appSettings["numberOfTracks"], out numberOfTracks);
+                if(!success){
+                    numberOfTracks = defaultNumberOfTracks;
+                }
                 return numberOfTracks;
             }  
         }
@@ -48,7 +61,12 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
             {
                 const int defaultMorningSessionStartHour = 9;
                 var morningSessionTimeHour = defaultMorningSessionStartHour;
-                int.TryParse(_appSettings["morningSessionStartHourAsTwentyFourHourInt"], out morningSessionTimeHour);
+                var success = int.TryParse(_appSettings["morningSessionStartHourAsTwentyFourHourInt"], out morningSessionTimeHour);
+                if (!success)
+                {
+                    morningSessionTimeHour = defaultMorningSessionStartHour;
+                }
+
                 return morningSessionTimeHour;
             }
         }
@@ -59,7 +77,12 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
             {
                 const int defaultLunchTimeStartTimeHour = 12;
                 var lunchTimeStartTimeHour = defaultLunchTimeStartTimeHour;
-                int.TryParse(_appSettings["lunchTimeStartTimeHourAsTwentyFourHourInt"], out lunchTimeStartTimeHour);
+                var success = int.TryParse(_appSettings["lunchTimeStartTimeHourAsTwentyFourHourInt"], out lunchTimeStartTimeHour);
+                if (!success)
+                {
+                    lunchTimeStartTimeHour = defaultLunchTimeStartTimeHour;
+                }
+
                 return lunchTimeStartTimeHour;
             }
         }
@@ -70,7 +93,12 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
             {
                 const int defaultAfternoonSessionStartHour = 13;
                 var afternoonSessionStartHour = defaultAfternoonSessionStartHour;
-                int.TryParse(_appSettings["afternoonSessionStartHourAsTwentyFourHourInt"], out afternoonSessionStartHour);
+                var success = int.TryParse(_appSettings["afternoonSessionStartHourAsTwentyFourHourInt"], out afternoonSessionStartHour);
+                if (!success)
+                {
+                    afternoonSessionStartHour = defaultAfternoonSessionStartHour;
+                }
+
                 return afternoonSessionStartHour;
             }
         }
@@ -81,7 +109,12 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
             {
                 const int defaultNetworkingSessionEarliestStartHour = 16;
                 var networkingSessionEarliestStartHour = defaultNetworkingSessionEarliestStartHour;
-                int.TryParse(_appSettings["networkingSessionEarliestStartHourAsTwentyFourHourInt"], out networkingSessionEarliestStartHour);
+                var success = int.TryParse(_appSettings["networkingSessionEarliestStartHourAsTwentyFourHourInt"], out networkingSessionEarliestStartHour);
+                if (!success)
+                {
+                    networkingSessionEarliestStartHour = defaultNetworkingSessionEarliestStartHour;
+                }
+
                 return networkingSessionEarliestStartHour;
             }
         }
@@ -92,7 +125,12 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
             {
                 const int defaultNetworkingSessionLatestStartHour = 17;
                 var networkingSessionLatestStartHour = defaultNetworkingSessionLatestStartHour;
-                int.TryParse(_appSettings["networkingSessionLatestStartHourAsTwentyFourHourInt"], out networkingSessionLatestStartHour);
+                var success = int.TryParse(_appSettings["networkingSessionLatestStartHourAsTwentyFourHourInt"], out networkingSessionLatestStartHour);
+                if (!success)
+                {
+                    networkingSessionLatestStartHour = defaultNetworkingSessionLatestStartHour;
+                }
+
                 return networkingSessionLatestStartHour;
             }
         }

@@ -1,13 +1,15 @@
 # ConferenceTrackManager
 
-## Run instructions
+## Run instructions For Mac
 
 ``` 
 git clone https://github.com/EvanPalmer/TWConferenceTrackManager.git
-cd ConferenceTrackManager/src/ThoughtWorks.ConferenceTrackManager.Tests
+cd TWConferenceTrackManager/src/
+dotnet restore
+cd ThoughtWorks.ConferenceTrackManager.Tests
 dotnet xunit
-cd ../ThoughtWorks.ConferenceTrackManager.Tests
-dotnet run
+cd ../ThoughtWorks.ConferenceTrackManager
+dotnet run talks.txt
 ```
 
 ## Thoughtworks Coding Assignment 2
