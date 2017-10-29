@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ThoughtWorks.ConferenceTrackManager.Access;
 using ThoughtWorks.ConferenceTrackManager.App;
-using ThoughtWorks.ConferenceTrackManager.Configuration;
 
 namespace ThoughtWorks.ConferenceTrackManager.Models
 {
@@ -13,7 +12,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
     public class Conference : IConference
     {
         private IConferenceSessionBuilder _conferenceSessionBuilder;
-
+        private IOutputWriter _outputWriter;
         private IList<ITalk> _allTalks;
         public IList<ITalk> AllTalks
         {
@@ -23,18 +22,23 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
             }
         }
 
-        // TODO: Use proper IOC
-        public Conference(IList<ITalk> talks, IConferenceSessionBuilder conferenceSessionBuilder)
+        public Conference(IList<ITalk> talks, IConferenceSessionBuilder conferenceSessionBuilder, IOutputWriter outputWriter)
         {
             _allTalks = talks;
             _conferenceSessionBuilder = conferenceSessionBuilder;
+            _outputWriter = outputWriter;
         }
 
         public void Print()
         {
             var conferenceSessions = _conferenceSessionBuilder.CreateSessionsOrEmptyList();
             var sortedTalks = _conferenceSessionBuilder.SortTalks(_allTalks);
-            _conferenceSessionBuilder.PopulateSessionsWithTalks(conferenceSessions, sortedTalks );
+            var response = _conferenceSessionBuilder.PopulateSessionsWithTalks(conferenceSessions, sortedTalks );
+
+            if(!response.SuccessfullyAddedAllTalksToSession)
+            {
+                _outputWriter.WriteLine(response.Message);
+            }
 
             foreach(var session in conferenceSessions)
             {

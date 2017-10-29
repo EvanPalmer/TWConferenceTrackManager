@@ -1,5 +1,4 @@
-﻿using System;
-using ThoughtWorks.ConferenceTrackManager.Factories;
+﻿using ThoughtWorks.ConferenceTrackManager.Factories;
 using ThoughtWorks.ConferenceTrackManager.Models;
 using ThoughtWorks.ConferenceTrackManager.Access;
 

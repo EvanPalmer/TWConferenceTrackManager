@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ThoughtWorks.ConferenceTrackManager.Models;
 using ThoughtWorks.ConferenceTrackManager.Configuration;
-using System.Linq;
-using System;
-using ThoughtWorks.ConferenceTrackManager.Exceptions;
 using ThoughtWorks.ConferenceTrackManager.Factories;
 
 namespace ThoughtWorks.ConferenceTrackManager.App
@@ -12,13 +10,13 @@ namespace ThoughtWorks.ConferenceTrackManager.App
     {
         IList<IConferenceSession> CreateSessionsOrEmptyList();
         List<ITalk> SortTalks(IList<ITalk> allTalks);
-        void PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks);
+        PopulateSessionsWithTalksResponse PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks);
     }
 
     public class ConferenceSessionBuilder : IConferenceSessionBuilder
     {
         private readonly IAppConfiguration _appConfiguration;
-        readonly IConferenceSessionFactory _conferenceSessionFactory;
+        private readonly IConferenceSessionFactory _conferenceSessionFactory;
 
         public ConferenceSessionBuilder(IAppConfiguration appConfiguration, IConferenceSessionFactory conferenceSessionFactory)
         {
@@ -46,34 +44,38 @@ namespace ThoughtWorks.ConferenceTrackManager.App
             return sortedTalks;
         }
 
-        public void PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks)
+        public PopulateSessionsWithTalksResponse PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks)
         {
-            //todo make this smaller And better tested.
+            // TODO Can improve
             var sessionIndex = 0;
             var failedAttempts = 0;
             var allSessionsFailed = false;
             var successfullyAddedTalkToSession = false;
-
+            var response = new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true };
             foreach (var talk in allTalks)
             {
                 do
                 {
                     successfullyAddedTalkToSession = sessions[sessionIndex].TryIncludeTalkInSession(talk);
-                    if(!successfullyAddedTalkToSession)
+                    if (!successfullyAddedTalkToSession)
                     {
                         failedAttempts = failedAttempts + 1;
                         allSessionsFailed = failedAttempts == sessions.Count();
-                    }else{
+                    }
+                    else
+                    {
                         failedAttempts = 0;
                         allSessionsFailed = false;
                     }
                     sessionIndex = sessionIndex + 1;
-                } while (!successfullyAddedTalkToSession && !allSessionsFailed && sessionIndex < sessions.Count());
+                } while (!successfullyAddedTalkToSession &&
+                         !allSessionsFailed &&
+                         sessionIndex < sessions.Count());
 
                 if (allSessionsFailed)
                 {
-                    break;
-                    // throw new ConferenceSetUpException("Didn't add a talk! The conference is full and I don't know what to do about it!");
+                    response.SuccessfullyAddedAllTalksToSession = false;
+                    response.Message = "Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n";
                 }
 
                 if (sessionIndex == sessions.Count())
@@ -81,6 +83,13 @@ namespace ThoughtWorks.ConferenceTrackManager.App
                     sessionIndex = 0;
                 }
             }
+            return response;
         }
+    }
+
+    public class PopulateSessionsWithTalksResponse
+    {
+        public bool SuccessfullyAddedAllTalksToSession { get; set; }
+        public string Message { get; set; }
     }
 }

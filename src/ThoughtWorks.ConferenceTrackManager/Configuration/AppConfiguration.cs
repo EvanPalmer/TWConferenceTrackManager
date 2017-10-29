@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 using ThoughtWorks.ConferenceTrackManager.Access;
 
@@ -7,7 +6,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Configuration
 {
     //todo: unit test this
     //todo strongly type this too
-    //todo make the detaults work
     public interface IAppConfiguration
     {
         int NumberOfTracks { get; }

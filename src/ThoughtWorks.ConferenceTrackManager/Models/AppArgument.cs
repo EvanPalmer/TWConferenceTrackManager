@@ -8,7 +8,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
         bool TryParse(string[] args, out string filename);
     }
 
-    // todo unit test this
     public class AppArgument : IAppArgument
     {
         readonly IOutputWriter _outputWriter;
