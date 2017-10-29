@@ -4,8 +4,6 @@ using ThoughtWorks.ConferenceTrackManager.Access;
 
 namespace ThoughtWorks.ConferenceTrackManager.Configuration
 {
-    //todo: unit test this
-    //todo strongly type this too
     public interface IAppConfiguration
     {
         int NumberOfTracks { get; }

@@ -1,5 +1,4 @@
-﻿using System;
-using ThoughtWorks.ConferenceTrackManager.Access;
+﻿using ThoughtWorks.ConferenceTrackManager.Access;
 using ThoughtWorks.ConferenceTrackManager.Models;
 using Xunit;
 using Moq;
@@ -56,7 +55,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             outputWriter.Verify(o => o.WriteLine("03:00AM Networking Event"), Times.Once());
         }
 
-        // todo check all methods are facts or theories
         [Fact]
         public void Print_PrintsNetworkingSession_AtEarliestTime()
         {

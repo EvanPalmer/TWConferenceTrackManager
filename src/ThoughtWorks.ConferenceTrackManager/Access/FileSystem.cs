@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace ThoughtWorks.ConferenceTrackManager.Access
 {
@@ -11,16 +10,28 @@ namespace ThoughtWorks.ConferenceTrackManager.Access
 
     public class FileSystem : IFileSystem
     {
+        readonly IOutputWriter _outputWriter;
+
+        public FileSystem(IOutputWriter outputWriter)
+        {
+            _outputWriter = outputWriter;
+        }
+
         public List<string> ReadFileAsStringListOrEmptyList(string inputFileNameWithPath)
         {
-            var fileContentsArray = File.ReadAllLines(inputFileNameWithPath);
+            List<string> fileContentsList = new List<string>();
 
-			List<string> fileContentsList = new List<string>() ;
-            if (fileContentsArray != null && fileContentsArray.Length > 0)
+            try
             {
-                fileContentsList = new List<string>(fileContentsArray);
-            }
+                var fileContentsArray = File.ReadAllLines(inputFileNameWithPath);
 
+                if (fileContentsArray != null && fileContentsArray.Length > 0)
+                {
+                    fileContentsList = new List<string>(fileContentsArray);
+                }
+            }catch{
+                _outputWriter.WriteLine($"Error reading file: {inputFileNameWithPath}");
+            }
             return fileContentsList;
         }
     }

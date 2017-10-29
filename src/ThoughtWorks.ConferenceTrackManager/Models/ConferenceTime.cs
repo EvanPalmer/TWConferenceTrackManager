@@ -51,7 +51,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
 
         public string TimeAsTwelveHourString()
         {
-            //todo format properly, without upper
             return _startTime.ToString("hh:mmtt").ToUpper();
         }
 

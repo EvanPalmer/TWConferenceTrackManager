@@ -1,5 +1,4 @@
-﻿using System;
-using ThoughtWorks.ConferenceTrackManager.Models;
+﻿using ThoughtWorks.ConferenceTrackManager.Models;
 using Xunit;
 
 namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
@@ -66,7 +65,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             // Arrange
             var session = new MorningConferenceSession(1, 2, 1);
             var result = session.TryIncludeTalkInSession(new Talk("Some talk 30mins"));
-
 
             // Act
             result = session.TryIncludeTalkInSession(new Talk("Some talk 31mins"));

@@ -19,7 +19,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
 
         public bool TryParse(string[] args, out string filename)
         {
-            // todo check if file exists, like validation
             filename = string.Empty;
 
             var argumentsAreValid = ArgumentsAreValid(args);

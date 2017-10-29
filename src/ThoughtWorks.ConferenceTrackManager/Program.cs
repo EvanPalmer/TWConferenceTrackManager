@@ -10,16 +10,20 @@ namespace ThoughtWorks.ConferenceTrackManager
 
         public static void Main(string[] args)
         {
-            // todo I think there's a nice way to handle arguments. Oh hangon, I think that's powershell
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AsImplementedInterfaces();
-            Container = builder.Build();
+            SetUpIoc();
 
-            using(var scope = Container.BeginLifetimeScope())
+            using (var scope = Container.BeginLifetimeScope())
             {
                 var conferenceManager = scope.Resolve<IConferenceManager>();
                 conferenceManager.Run(args);
             }
+        }
+
+        private static void SetUpIoc()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AsImplementedInterfaces();
+            Container = builder.Build();
         }
     }
 }

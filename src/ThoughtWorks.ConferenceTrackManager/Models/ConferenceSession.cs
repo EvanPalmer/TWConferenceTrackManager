@@ -12,7 +12,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
 
     public abstract class ConferenceSession : IConferenceSession
     {
-        // todo mkaes these private or protected fields
         protected int _startHour;
         protected int _endHour;
         protected ConferenceTime _currentSessionEndtime;

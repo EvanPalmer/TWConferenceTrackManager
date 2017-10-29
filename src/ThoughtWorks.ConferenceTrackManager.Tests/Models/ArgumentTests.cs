@@ -37,7 +37,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             Assert.False(result);
         }
 
-
         [Fact]
         public void TryParse_ReturnsTrue_WhenThereIsAnArgument()
         {

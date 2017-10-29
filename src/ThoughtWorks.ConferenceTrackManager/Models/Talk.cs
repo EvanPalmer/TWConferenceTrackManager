@@ -13,9 +13,9 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
 
     public class Talk : ITalk
     {
+        private const int _lengthOfLightningTalkInMinutes = 5;
         private const string _inputStringFormat = "(\\D+) (lightning|\\d+)";
         private readonly Regex _regex = new Regex(_inputStringFormat);
-        private const int _lengthOfLightningTalkInMinutes = 5;
 
         public string Name
         {

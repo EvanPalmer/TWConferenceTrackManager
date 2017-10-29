@@ -31,7 +31,6 @@ namespace ThoughtWorks.ConferenceTrackManager.App
 
             if (argumentsAreValid)
             {
-                // todo what if there's no input file?
                 var talkDefinitionsList =  _fileSystem.ReadFileAsStringListOrEmptyList(filename);
                 var allTalks = _talkFactory.CreateTalkCollectionFromInput(talkDefinitionsList);
                 var conference = _conferenceFactory.Create(allTalks);

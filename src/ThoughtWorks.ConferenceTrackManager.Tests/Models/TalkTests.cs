@@ -1,5 +1,4 @@
-﻿using System;
-using ThoughtWorks.ConferenceTrackManager.Exceptions;
+﻿using ThoughtWorks.ConferenceTrackManager.Exceptions;
 using ThoughtWorks.ConferenceTrackManager.Models;
 using Xunit;
 

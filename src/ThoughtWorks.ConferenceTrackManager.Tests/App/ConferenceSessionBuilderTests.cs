@@ -59,6 +59,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             // Assert
             Assert.True(sessions.Count == 4);
         }
+
         [Fact]
         public void CreateSessionsOrEmptyList_BuildsAMorningSession_WhenOneTracksConfigured()
         {
@@ -75,7 +76,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             conferenceSessionFactory.Verify(csf => csf.CreateMorningConferenceSession(It.IsAny<int>()), Times.Exactly(2));
         }
 
-
         [Fact]
         public void CreateSessionsOrEmptyList_BuildsAnAfternoonSession_WhenOneTracksConfigured()
         {
@@ -91,8 +91,6 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             // Assert
             conferenceSessionFactory.Verify(csf => csf.CreateAfternoonConferenceSession(), Times.Exactly(2));
         }
-
-
 
         [Fact]
         public void SortTalks_OrdersSortsDecendingByTime()
@@ -172,6 +170,5 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             // Assert
             mockSession2.Verify(s => s.TryIncludeTalkInSession(It.IsAny<ITalk>()), Times.Exactly(4));
         }
-
     }
 }
