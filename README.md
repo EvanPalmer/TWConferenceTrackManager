@@ -1,5 +1,16 @@
 # ConferenceTrackManager
-##Thoughtworks Coding Assignment 2
+
+## Run instructions
+
+``` 
+git clone https://github.com/EvanPalmer/TWConferenceTrackManager.git
+cd ConferenceTrackManager/src/ThoughtWorks.ConferenceTrackManager.Tests
+dotnet xunit
+cd ../ThoughtWorks.ConferenceTrackManager.Tests
+dotnet run
+```
+
+## Thoughtworks Coding Assignment 2
 
 > You are planning a big programming conference and have received many proposals which have passed the initial screen process but you're having trouble fitting them into the time constraints of the day -- there are so many possibilities! So you write a program to do it for you.
 > 
