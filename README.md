@@ -14,7 +14,7 @@ cd ../ThoughtWorks.ConferenceTrackManager
 dotnet run talks.txt
 ```
 
-## Architecture Decisions/Design Explainations
+## Architecture Decisions/Design Explanations
 1. Domain models: Conference, ConferenceSession and Talk
 2. Value models are immutable
 3. Any complex logic from model is moved into a dependency
@@ -26,40 +26,52 @@ dotnet run talks.txt
 8. Basic handling of command line arguments
 9. Use ThoughtWorks.ConferenceTrackManager.Access namespace to build seams around system dependencies. Sometimes there's a bit of untested logic in there, which isn't ideal.
 
-## Assumptions
+## Talk Distribution Algorithm Design
+Allocating talks to sessions, efficiently, and with optimal use of space was a difficult problem.
 
+I tackled this by sorting the talks from longest, to lightning, then allocating them over the sessions one talk per session at a time. This means the longest 
+talks are at the beginning of each session, and the shorter ones are at the end. Since at the end when we're (potentially) running out of space, it's more
+likely that we could fit in a smaller talk than a longer one.
+
+In other words, we select the longest talk that will fit in the available space in the session.
+
+There are surely much better algorithms out there, and to override the default algorithm, a new ITalkDistributor can be implemented and injected.
+
+## Assumptions
 1. If the application's algorithm can't fit all the talks in, it display's an error message and outputs the best effort
 2. If the file can't be read, output an error and display an empty conference.
 3. Output is written to Console, but is abstracted away so replace with any type of IOutputWriter you like
 4. Rules state no external dependencies, but I assume an IOC container is permissible along with my testing (Xunit) and mocking (Moq) frameworks.
 
 ## Actual output of application, based on given input
-Track 1:  
-09:00AM Writing fast Tests Against Enterprise Rails 60min  
-10:00AM Ruby on Rails Legacy App Maintenance 60min  
-11:00AM Accounting-Driven Development 45min  
-12:00PM Lunch  
-01:00PM Communicating Over Distance 60min  
-02:00PM Overdoing it in Python 45min  
-02:45PM Pair Programming vs Noise 45min  
-03:30PM Woah 30min  
-04:00PM Ruby vs. Clojure for Back-End Development 30min  
-04:30PM User Interface CSS in Rails Apps 30min  
-05:00PM Networking Event  
+Track 1:
+09:00AM Writing fast Tests Against Enterprise Rails 60min
+10:00AM Ruby on Rails Legacy App Maintenance 60min
+11:00AM Accounting-Driven Development 45min
+12:00PM Lunch
+01:00PM Communicating Over Distance 60min
+02:00PM Overdoing it in Python 45min
+02:45PM Pair Programming vs Noise 45min
+03:30PM Woah 30min
+04:00PM Ruby vs. Clojure for Back-End Development 30min
+04:30PM User Interface CSS in Rails Apps 30min
+05:00PM Networking Event
 
-Track 2:  
-09:00AM Rails Magic 60min  
-10:00AM Ruby Errors from Mismatched Gem Versions 45min  
-10:45AM Clojure Ate Scala (on my project) 45min  
-11:30AM Sit Down and Write 30min  
-12:00PM Lunch  
-01:00PM Ruby on Rails: Why We Should Move On 60min  
-02:00PM Common Ruby Errors 45min  
-02:45PM Lua for the Masses 30min  
-03:15PM Programming in the Boondocks of Seattle 30min  
-03:45PM A World Without HackerNews 30min  
-04:15PM Rails for Python Developers lightning  
-05:00PM Networking Event  
+Track 2:
+09:00AM Rails Magic 60min
+10:00AM Ruby Errors from Mismatched Gem Versions 45min
+10:45AM Clojure Ate Scala (on my project) 45min
+11:30AM Sit Down and Write 30min
+12:00PM Lunch
+01:00PM Ruby on Rails: Why We Should Move On 60min
+02:00PM Common Ruby Errors 45min
+02:45PM Lua for the Masses 30min
+03:15PM Programming in the Boondocks of Seattle 30min
+03:45PM A World Without HackerNews 30min
+04:15PM Rails for Python Developers lightning
+05:00PM Networking Event
+
+# Requirements
 
 ## Thoughtworks Coding Assignment 2
 
