@@ -13,7 +13,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void DistributeTalksAcrossSessions_SortsTalks_DecendingByLength()
         {
             // Arrange
-            var conferenceSessionBuilder = new TalkDistributor();
+            var talkDistributer = new TalkDistributor();
             var talks = new List<ITalk> {
                 new Talk("Some short talk 1min"),
                 new Talk("Some longer talk 10min"),
@@ -32,7 +32,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
 
 
             // Act
-            var sortedTalks = conferenceSessionBuilder.DistributeTalksAcrossSessions(sessions, talks);
+            var sortedTalks = talkDistributer.DistributeTalksAcrossSessions(sessions, talks);
 
             // Assert
             Assert.Equal("Some longer talk 10min", firstTalkPlaced.TalkDefinition);
@@ -43,7 +43,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void DistributeTalksAcrossSessions_IncludesAllTalksInSession_WhenTryIncludeSucceeds()
         {
             // Arrange
-            var conferenceSessionBuilder = new TalkDistributor();
+            var talkDistributer = new TalkDistributor();
             var talks = new List<ITalk> {
                 new Talk("A talk 10min"),
                 new Talk("Some talk 10min"),
@@ -57,7 +57,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             sessions.Add(mockSession1.Object);
 
             // Act
-            conferenceSessionBuilder.DistributeTalksAcrossSessions(sessions, talks);
+            talkDistributer.DistributeTalksAcrossSessions(sessions, talks);
 
             // Assert
             mockSession1.Verify(s => s.TryIncludeTalkInSession(It.IsAny<ITalk>()), Times.Exactly(4));
@@ -67,7 +67,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
         public void DistributeTalksAcrossSessions_IncludesAllTalksInSession_WhenTryIncludeFailsOnFirst()
         {
             // Arrange
-            var conferenceSessionBuilder = new TalkDistributor();
+            var talkDistributer = new TalkDistributor();
             var talks = new List<ITalk> {
                 new Talk("A talk 10min"),
                 new Talk("Some talk 10min"),
@@ -85,7 +85,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             sessions.Add(mockSession2.Object);
 
             // Act
-            conferenceSessionBuilder.DistributeTalksAcrossSessions(sessions, talks);
+            talkDistributer.DistributeTalksAcrossSessions(sessions, talks);
 
             // Assert
             mockSession2.Verify(s => s.TryIncludeTalkInSession(It.IsAny<ITalk>()), Times.Exactly(4));

@@ -11,7 +11,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
 
     public class Conference : IConference
     {
-        private IConferenceSessionBuilder _conferenceSessionBuilder;
+        private IConferenceSessionCreator _conferenceSessionCreator;
         private ITalkDistributor _talkDistributor;
         private IOutputWriter _outputWriter;
         private IList<ITalk> _talks;
@@ -23,17 +23,17 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
             }
         }
 
-        public Conference(IList<ITalk> talks, IConferenceSessionBuilder conferenceSessionBuilder, IOutputWriter outputWriter, ITalkDistributor talkDistributor)
+        public Conference(IList<ITalk> talks, IConferenceSessionCreator conferenceSessionCreator, IOutputWriter outputWriter, ITalkDistributor talkDistributor)
         {
             _talks = talks;
-            _conferenceSessionBuilder = conferenceSessionBuilder;
+            _conferenceSessionCreator = conferenceSessionCreator;
             _outputWriter = outputWriter;
             _talkDistributor = talkDistributor;
         }
 
         public void Print()
         {
-            var conferenceSessions = _conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
+            var conferenceSessions = _conferenceSessionCreator.CreateSessionsOrEmptyListFromConfig();
             var successfullyDistributedTalks = _talkDistributor.DistributeTalksAcrossSessions(conferenceSessions, _talks);
 
             if(!successfullyDistributedTalks)

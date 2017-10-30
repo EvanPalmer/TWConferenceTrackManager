@@ -10,7 +10,7 @@ using ThoughtWorks.ConferenceTrackManager.Factories;
 
 namespace ThoughtWorks.ConferenceTrackManager.Tests.App
 {
-    public class ConferenceSessionBuilderTests
+    public class ConferenceSessionCreatorTests
     {
         [Fact]
         public void CreateSessionsOrEmptyListFromConfig_BuildsNoSessions_WhenNoTracksConfigured()
@@ -19,10 +19,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(0);
             var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
-			var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
+            var conferenceSessionCreator = new ConferenceSessionCreator(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
+            var sessions = conferenceSessionCreator.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             Assert.Empty(sessions);
@@ -35,10 +35,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(1);
             var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
+            var conferenceSessionCreator = new ConferenceSessionCreator(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
+            var sessions = conferenceSessionCreator.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             Assert.True(sessions.Count == 2);
@@ -51,10 +51,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(2);
             var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
+            var conferenceSessionCreator = new ConferenceSessionCreator(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
+            var sessions = conferenceSessionCreator.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             Assert.True(sessions.Count == 4);
@@ -67,10 +67,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(2);
             var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
+            var conferenceSessionCreator = new ConferenceSessionCreator(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
+            var sessions = conferenceSessionCreator.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             conferenceSessionFactory.Verify(csf => csf.CreateMorningConferenceSession(It.IsAny<int>()), Times.Exactly(2));
@@ -83,10 +83,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var config = new Mock<IAppConfiguration>();
             config.Setup(c => c.NumberOfTracks).Returns(2);
             var conferenceSessionFactory = new Mock<IConferenceSessionFactory>();
-            var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
+            var conferenceSessionCreator = new ConferenceSessionCreator(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
+            var sessions = conferenceSessionCreator.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             conferenceSessionFactory.Verify(csf => csf.CreateAfternoonConferenceSession(), Times.Exactly(2));

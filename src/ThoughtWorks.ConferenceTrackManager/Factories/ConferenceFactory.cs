@@ -11,20 +11,20 @@ namespace ThoughtWorks.ConferenceTrackManager.Factories
     }
     public class ConferenceFactory : IConferenceFactory
     {
-        private readonly IConferenceSessionBuilder _conferenceBuilder;
+        private readonly IConferenceSessionCreator _sessionCreator;
         private readonly IOutputWriter _outputWriter;
         private readonly ITalkDistributor _talkDistributor;
 
-        public ConferenceFactory(IConferenceSessionBuilder conferenceBuilder, IOutputWriter outputWriter, ITalkDistributor talkDistributor)
+        public ConferenceFactory(IConferenceSessionCreator sessionCreator, IOutputWriter outputWriter, ITalkDistributor talkDistributor)
         {
-            _conferenceBuilder = conferenceBuilder;
+            _sessionCreator = sessionCreator;
             _outputWriter = outputWriter;
             _talkDistributor = talkDistributor;
         }
 
         public IConference Create(IList<ITalk> talks)
         {
-            return new Conference(talks, _conferenceBuilder, _outputWriter, _talkDistributor);
+            return new Conference(talks, _sessionCreator, _outputWriter, _talkDistributor);
         }
     }
 }

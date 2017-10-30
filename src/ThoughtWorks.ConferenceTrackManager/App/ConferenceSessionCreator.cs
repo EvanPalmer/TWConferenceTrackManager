@@ -5,17 +5,17 @@ using ThoughtWorks.ConferenceTrackManager.Factories;
 
 namespace ThoughtWorks.ConferenceTrackManager.App
 {
-    public interface IConferenceSessionBuilder
+    public interface IConferenceSessionCreator
     {
         IList<IConferenceSession> CreateSessionsOrEmptyListFromConfig();
     }
 
-    public class ConferenceSessionBuilder : IConferenceSessionBuilder
+    public class ConferenceSessionCreator : IConferenceSessionCreator
     {
         private readonly IAppConfiguration _appConfiguration;
         private readonly IConferenceSessionFactory _conferenceSessionFactory;
 
-        public ConferenceSessionBuilder(IAppConfiguration appConfiguration, IConferenceSessionFactory conferenceSessionFactory)
+        public ConferenceSessionCreator(IAppConfiguration appConfiguration, IConferenceSessionFactory conferenceSessionFactory)
         {
             _conferenceSessionFactory = conferenceSessionFactory;
             _appConfiguration = appConfiguration;
