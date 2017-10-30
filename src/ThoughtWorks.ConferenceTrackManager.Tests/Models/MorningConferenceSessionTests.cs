@@ -37,7 +37,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             morningConferenceSession.Print();
 
             // Assert
-            outputWriter.Verify(o => o.WriteLine("Track 1"), Times.Once());
+            outputWriter.Verify(o => o.WriteLine("Track 1:"), Times.Once());
         }
 
         [Fact]

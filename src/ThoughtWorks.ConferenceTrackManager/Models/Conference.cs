@@ -13,31 +13,30 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
     {
         private IConferenceSessionBuilder _conferenceSessionBuilder;
         private IOutputWriter _outputWriter;
-        private IList<ITalk> _allTalks;
-        public IList<ITalk> AllTalks
+        private IList<ITalk> _talks;
+        public IList<ITalk> Talks
         {
             get
             {
-                return _allTalks;
+                return _talks;
             }
         }
 
         public Conference(IList<ITalk> talks, IConferenceSessionBuilder conferenceSessionBuilder, IOutputWriter outputWriter)
         {
-            _allTalks = talks;
+            _talks = talks;
             _conferenceSessionBuilder = conferenceSessionBuilder;
             _outputWriter = outputWriter;
         }
 
         public void Print()
         {
-            var conferenceSessions = _conferenceSessionBuilder.CreateSessionsOrEmptyList();
-            var sortedTalks = _conferenceSessionBuilder.SortTalks(_allTalks);
-            var response = _conferenceSessionBuilder.PopulateSessionsWithTalks(conferenceSessions, sortedTalks );
+            var conferenceSessions = _conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
+            var successfullyDistributedTalks = _conferenceSessionBuilder.DistributeTalksAcrossSessions(conferenceSessions, _talks);
 
-            if(!response.SuccessfullyAddedAllTalksToSession)
+            if(!successfullyDistributedTalks)
             {
-                _outputWriter.WriteLine(response.Message);
+                _outputWriter.WriteLine("Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n");
             }
 
             foreach(var session in conferenceSessions)

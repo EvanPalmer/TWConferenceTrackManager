@@ -22,7 +22,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
 			var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
+            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             Assert.Empty(sessions);
@@ -38,7 +38,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
+            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             Assert.True(sessions.Count == 2);
@@ -54,7 +54,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
+            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             Assert.True(sessions.Count == 4);
@@ -70,7 +70,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
+            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             conferenceSessionFactory.Verify(csf => csf.CreateMorningConferenceSession(It.IsAny<int>()), Times.Exactly(2));
@@ -86,14 +86,14 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             var conferenceSessionBuilder = new ConferenceSessionBuilder(config.Object, conferenceSessionFactory.Object);
 
             // Act
-            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyList();
+            var sessions = conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
 
             // Assert
             conferenceSessionFactory.Verify(csf => csf.CreateAfternoonConferenceSession(), Times.Exactly(2));
         }
 
         [Fact]
-        public void SortTalks_OrdersSortsDecendingByTime()
+        public void DistributeTalksAcrossSessions_SortsTalks_DecendingByLength()
         {
             // Arrange
             var config = new Mock<IAppConfiguration>();
@@ -103,16 +103,29 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
                 new Talk("Some short talk 1min"),
                 new Talk("Some longer talk 10min"),
             };
+            var sessions = new List<IConferenceSession>();
+            var session1 = new Mock<IConferenceSession>();
+
+            ITalk firstTalkPlaced = null;
+            session1.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(true).Callback((ITalk t) => firstTalkPlaced = t);;
+            sessions.Add(session1.Object);
+
+            ITalk secondTalkPlaced = null;
+            var session2 = new Mock<IConferenceSession>();
+            session2.Setup(s => s.TryIncludeTalkInSession(It.IsAny<Talk>())).Returns(true).Callback((ITalk t) => secondTalkPlaced = t);
+            sessions.Add(session2.Object);
+
 
             // Act
-            var sortedTalks = conferenceSessionBuilder.SortTalks(talks);
+            var sortedTalks = conferenceSessionBuilder.DistributeTalksAcrossSessions(sessions, talks);
 
             // Assert
-            Assert.Equal(10, sortedTalks.First().LengthInMinutes);
+            Assert.Equal("Some longer talk 10min", firstTalkPlaced.TalkDefinition);
+            Assert.Equal("Some short talk 1min", secondTalkPlaced.TalkDefinition);
         }
 
         [Fact]
-        public void PopulateSessionsWithTalks_IncludesAllTalksInSession_WhenTryIncludeSucceeds()
+        public void DistributeTalksAcrossSessions_IncludesAllTalksInSession_WhenTryIncludeSucceeds()
         {
             // Arrange
             var config = new Mock<IAppConfiguration>();
@@ -133,14 +146,14 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             sessions.Add(mockSession1.Object);
 
             // Act
-            conferenceSessionBuilder.PopulateSessionsWithTalks(sessions, talks);
+            conferenceSessionBuilder.DistributeTalksAcrossSessions(sessions, talks);
 
             // Assert
             mockSession1.Verify(s => s.TryIncludeTalkInSession(It.IsAny<ITalk>()), Times.Exactly(4));
         }
 
         [Fact]
-        public void PopulateSessionsWithTalks_IncludesAllTalksInSession_WhenTryIncludeFailsOnFirst()
+        public void DistributeTalksAcrossSessions_IncludesAllTalksInSession_WhenTryIncludeFailsOnFirst()
         {
             // Arrange
             var config = new Mock<IAppConfiguration>();
@@ -165,7 +178,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.App
             sessions.Add(mockSession2.Object);
 
             // Act
-            conferenceSessionBuilder.PopulateSessionsWithTalks(sessions, talks);
+            conferenceSessionBuilder.DistributeTalksAcrossSessions(sessions, talks);
 
             // Assert
             mockSession2.Verify(s => s.TryIncludeTalkInSession(It.IsAny<ITalk>()), Times.Exactly(4));

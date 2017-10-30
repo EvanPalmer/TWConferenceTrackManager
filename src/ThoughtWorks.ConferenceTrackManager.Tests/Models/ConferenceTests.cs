@@ -15,8 +15,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             // Arrange
             List<ITalk> talks = new List<ITalk>();
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
-            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(new List<IConferenceSession>());
-            sessionBuilder.Setup(sb => sb.PopulateSessionsWithTalks(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true });
+            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(new List<IConferenceSession>());
+            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
             var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
 
@@ -24,25 +24,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             conference.Print();
 
             // Assert
-            sessionBuilder.Verify(sb => sb.CreateSessionsOrEmptyList(), Times.Once());
-        }
-
-        [Fact]
-        public void Print_SortsTalks()
-        {
-            // Arrange
-            List<ITalk> talks = new List<ITalk>();
-            var sessionBuilder = new Mock<IConferenceSessionBuilder>();
-            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(new List<IConferenceSession>());
-            sessionBuilder.Setup(sb => sb.PopulateSessionsWithTalks(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true });
-            var outputWriter = new Mock<IOutputWriter>();
-            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
-
-            // Act
-            conference.Print();
-
-            // Assert
-            sessionBuilder.Verify(sb => sb.SortTalks(talks), Times.Once());
+            sessionBuilder.Verify(sb => sb.CreateSessionsOrEmptyListFromConfig(), Times.Once());
         }
 
         [Fact]
@@ -52,8 +34,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             List<ITalk> talks = new List<ITalk>();
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
             var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
-            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.PopulateSessionsWithTalks(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true });
+            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
+            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
             var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
 
@@ -61,7 +43,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             conference.Print();
 
             // Assert
-            sessionBuilder.Verify(sb => sb.PopulateSessionsWithTalks(sessions, It.IsAny<IList<ITalk>>()), Times.Once());
+            sessionBuilder.Verify(sb => sb.DistributeTalksAcrossSessions(sessions, It.IsAny<IList<ITalk>>()), Times.Once());
         }
 
         [Fact]
@@ -71,8 +53,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             List<ITalk> talks = new List<ITalk>();
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
             var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
-            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.PopulateSessionsWithTalks(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = false, Message = "Error message from PopulateSessionsWithTalks" });
+            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
+            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(false);
             var outputWriter = new Mock<IOutputWriter>();
             var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
 
@@ -80,7 +62,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             conference.Print();
 
             // Assert
-            outputWriter.Verify(o => o.WriteLine("Error message from PopulateSessionsWithTalks"), Times.Once());
+            outputWriter.Verify(o => o.WriteLine("Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n"), Times.Once());
         }
 
         [Fact]
@@ -90,8 +72,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             List<ITalk> talks = new List<ITalk>();
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
             var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
-            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.PopulateSessionsWithTalks(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true, Message = "Error message from PopulateSessionsWithTalks" });
+            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
+            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
             var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
 
@@ -99,28 +81,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             conference.Print();
 
             // Assert
-            outputWriter.Verify(o => o.WriteLine("Error message from PopulateSessionsWithTalks"), Times.Never());
-        }
-
-        [Fact]
-        public void Print_UsesSortedTalk_ToPopulatesSessions()
-        {
-            // Arrange
-            List<ITalk> talks = new List<ITalk>();
-            var sessionBuilder = new Mock<IConferenceSessionBuilder>();
-            var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
-            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.PopulateSessionsWithTalks(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true });
-            var sortedTalks = new List<ITalk>();
-            sessionBuilder.Setup(sb => sb.SortTalks(talks)).Returns(sortedTalks);
-            var outputWriter = new Mock<IOutputWriter>();
-            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
-
-            // Act
-            conference.Print();
-
-            // Assert
-            sessionBuilder.Verify(sb => sb.PopulateSessionsWithTalks(sessions, sortedTalks), Times.Once());
+            outputWriter.Verify(o => o.WriteLine("Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n"), Times.Never());
         }
 
         [Fact]
@@ -134,8 +95,8 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             sessions.Add(firstSession.Object);
             var lastSession = new Mock<IConferenceSession>();
             sessions.Add(lastSession.Object);
-            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyList()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.PopulateSessionsWithTalks(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true });
+            sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
+            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
             var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
 

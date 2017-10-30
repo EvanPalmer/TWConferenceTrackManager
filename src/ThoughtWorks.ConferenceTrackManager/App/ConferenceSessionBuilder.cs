@@ -8,9 +8,8 @@ namespace ThoughtWorks.ConferenceTrackManager.App
 {
     public interface IConferenceSessionBuilder
     {
-        IList<IConferenceSession> CreateSessionsOrEmptyList();
-        List<ITalk> SortTalks(IList<ITalk> allTalks);
-        PopulateSessionsWithTalksResponse PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks);
+        IList<IConferenceSession> CreateSessionsOrEmptyListFromConfig();
+        bool DistributeTalksAcrossSessions(IList<IConferenceSession> sessions, IList<ITalk> allTalks);
     }
 
     public class ConferenceSessionBuilder : IConferenceSessionBuilder
@@ -24,7 +23,7 @@ namespace ThoughtWorks.ConferenceTrackManager.App
             _appConfiguration = appConfiguration;
         }
 
-        public IList<IConferenceSession> CreateSessionsOrEmptyList()
+        public IList<IConferenceSession> CreateSessionsOrEmptyListFromConfig()
         {
             var sessions = new List<IConferenceSession>();
             for (var trackIndex = 0; trackIndex < _appConfiguration.NumberOfTracks; trackIndex++)
@@ -38,57 +37,32 @@ namespace ThoughtWorks.ConferenceTrackManager.App
             return sessions;
         }   
 
-        public List<ITalk> SortTalks(IList<ITalk> allTalks)
+        public bool DistributeTalksAcrossSessions(IList<IConferenceSession> sessions, IList<ITalk> talks)
         {
-            var sortedTalks = allTalks.OrderByDescending(t => t.LengthInMinutes).ToList();
-            return sortedTalks;
-        }
+            var successfullyDistributedTalks = true;
+            var sortedTalks = talks.OrderByDescending(t => t.LengthInMinutes).ToList();
+            var talkIndex = 0;
 
-        public PopulateSessionsWithTalksResponse PopulateSessionsWithTalks(IList<IConferenceSession> sessions, IList<ITalk> allTalks)
-        {
-            var sessionIndex = 0;
-            var failedAttempts = 0;
-            var allSessionsFailed = false;
-            var successfullyAddedTalkToSession = false;
-            var response = new PopulateSessionsWithTalksResponse { SuccessfullyAddedAllTalksToSession = true };
-            foreach (var talk in allTalks)
+            while (talkIndex < sortedTalks.Count())
             {
-                do
+                var successfullyAddedTalkToSession = false;
+                foreach(var session in sessions)
                 {
-                    successfullyAddedTalkToSession = sessions[sessionIndex].TryIncludeTalkInSession(talk);
-                    if (!successfullyAddedTalkToSession)
+                    successfullyAddedTalkToSession = session.TryIncludeTalkInSession(sortedTalks[talkIndex]);
+                    if (successfullyAddedTalkToSession)
                     {
-                        failedAttempts = failedAttempts + 1;
-                        allSessionsFailed = failedAttempts == sessions.Count();
+                        talkIndex = talkIndex + 1;
                     }
-                    else
-                    {
-                        failedAttempts = 0;
-                        allSessionsFailed = false;
-                    }
-                    sessionIndex = sessionIndex + 1;
-                } while (!successfullyAddedTalkToSession &&
-                         !allSessionsFailed &&
-                         sessionIndex < sessions.Count());
-
-                if (allSessionsFailed)
-                {
-                    response.SuccessfullyAddedAllTalksToSession = false;
-                    response.Message = "Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n";
                 }
 
-                if (sessionIndex == sessions.Count())
+                if(!successfullyAddedTalkToSession)
                 {
-                    sessionIndex = 0;
+                    successfullyDistributedTalks = false;
+                    talkIndex = talkIndex + 1;
                 }
             }
-            return response;
-        }
-    }
 
-    public class PopulateSessionsWithTalksResponse
-    {
-        public bool SuccessfullyAddedAllTalksToSession { get; set; }
-        public string Message { get; set; }
+            return successfullyDistributedTalks;
+        }
     }
 }
