@@ -12,6 +12,7 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
     public class Conference : IConference
     {
         private IConferenceSessionBuilder _conferenceSessionBuilder;
+        private ITalkDistributor _talkDistributor;
         private IOutputWriter _outputWriter;
         private IList<ITalk> _talks;
         public IList<ITalk> Talks
@@ -22,21 +23,22 @@ namespace ThoughtWorks.ConferenceTrackManager.Models
             }
         }
 
-        public Conference(IList<ITalk> talks, IConferenceSessionBuilder conferenceSessionBuilder, IOutputWriter outputWriter)
+        public Conference(IList<ITalk> talks, IConferenceSessionBuilder conferenceSessionBuilder, IOutputWriter outputWriter, ITalkDistributor talkDistributor)
         {
             _talks = talks;
             _conferenceSessionBuilder = conferenceSessionBuilder;
             _outputWriter = outputWriter;
+            _talkDistributor = talkDistributor;
         }
 
         public void Print()
         {
             var conferenceSessions = _conferenceSessionBuilder.CreateSessionsOrEmptyListFromConfig();
-            var successfullyDistributedTalks = _conferenceSessionBuilder.DistributeTalksAcrossSessions(conferenceSessions, _talks);
+            var successfullyDistributedTalks = _talkDistributor.DistributeTalksAcrossSessions(conferenceSessions, _talks);
 
             if(!successfullyDistributedTalks)
             {
-                _outputWriter.WriteLine("Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n");
+                _outputWriter.WriteLine("Didn't add at least one of the talks!\nHere's the best I could do:\n");
             }
 
             foreach(var session in conferenceSessions)

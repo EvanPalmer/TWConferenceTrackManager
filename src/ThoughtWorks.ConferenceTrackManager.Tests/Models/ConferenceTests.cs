@@ -16,9 +16,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             List<ITalk> talks = new List<ITalk>();
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
             sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(new List<IConferenceSession>());
-            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
+            var talkDistributor = new Mock<ITalkDistributor>();
+            talkDistributor.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
-            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
+            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object, talkDistributor.Object);
 
             // Act
             conference.Print();
@@ -35,15 +36,16 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
             var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
             sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
+            var talkDistributor = new Mock<ITalkDistributor>();
+            talkDistributor.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
-            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
+            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object, talkDistributor.Object);
 
             // Act
             conference.Print();
 
             // Assert
-            sessionBuilder.Verify(sb => sb.DistributeTalksAcrossSessions(sessions, It.IsAny<IList<ITalk>>()), Times.Once());
+            talkDistributor.Verify(sb => sb.DistributeTalksAcrossSessions(sessions, It.IsAny<IList<ITalk>>()), Times.Once());
         }
 
         [Fact]
@@ -54,15 +56,16 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
             var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
             sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(false);
+            var talkDistributor = new Mock<ITalkDistributor>();
+            talkDistributor.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(false);
             var outputWriter = new Mock<IOutputWriter>();
-            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
+            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object, talkDistributor.Object);
 
             // Act
             conference.Print();
 
             // Assert
-            outputWriter.Verify(o => o.WriteLine("Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n"), Times.Once());
+            outputWriter.Verify(o => o.WriteLine("Didn't add at least one of the talks!\nHere's the best I could do:\n"), Times.Once());
         }
 
         [Fact]
@@ -73,15 +76,16 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var sessionBuilder = new Mock<IConferenceSessionBuilder>();
             var sessions = new List<IConferenceSession> { new Mock<IConferenceSession>().Object, new Mock<IConferenceSession>().Object };
             sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
+            var talkDistributor = new Mock<ITalkDistributor>();
+            talkDistributor.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
-            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
+            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object, talkDistributor.Object);
 
             // Act
             conference.Print();
 
             // Assert
-            outputWriter.Verify(o => o.WriteLine("Didn't add a talk! The conference is full and I don't know what to do about it!\nHere's the best I could do:\n"), Times.Never());
+            outputWriter.Verify(o => o.WriteLine("Didn't add at least one of the talks!\nHere's the best I could do:\n"), Times.Never());
         }
 
         [Fact]
@@ -96,9 +100,10 @@ namespace ThoughtWorks.ConferenceTrackManager.Tests.Models
             var lastSession = new Mock<IConferenceSession>();
             sessions.Add(lastSession.Object);
             sessionBuilder.Setup(sb => sb.CreateSessionsOrEmptyListFromConfig()).Returns(sessions);
-            sessionBuilder.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
+            var talkDistributor = new Mock<ITalkDistributor>();
+            talkDistributor.Setup(sb => sb.DistributeTalksAcrossSessions(It.IsAny<IList<IConferenceSession>>(), It.IsAny<IList<ITalk>>())).Returns(true);
             var outputWriter = new Mock<IOutputWriter>();
-            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object);
+            var conference = new Conference(talks, sessionBuilder.Object, outputWriter.Object, talkDistributor.Object);
 
             // Act
             conference.Print();
